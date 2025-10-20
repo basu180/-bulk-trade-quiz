@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bulk Trade AI Quiz</title>
+  <style>
+    :root {
+      --bg-dark: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      --bg-light: #f5f8fa;
+      --text-dark: #ffffff;
+      --text-light: #1a1a1a;
+      --accent: #00e0ff;
+    }
+    body {
+      font-family: "Poppins", sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-dark);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+      transition: all 0.4s ease-in-out;
+    }
+    body.light {
+      background: var(--bg-light);
+      color: var(--text-light);
+    }
+    h1 {
+      margin-top: 30px;
+      font-size: 2em;
+      color: var(--accent);
+      text-align: center;
+    }
+    .quiz-container {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 25px;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      width: 90%;
+      max-width: 650px;
+      margin-top: 20px;
+      transition: all 0.4s ease-in-out;
+    }
+    body.light .quiz-container {
+      background: #fff;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+    .question {
+      margin-bottom: 15px;
+      font-size: 1.2em;
+      color: var(--accent);
+    }
+    .option {
+      display: block;
+      background: rgba(255, 255, 255, 0.08);
+      padding: 10px;
+      border-radius: 8px;
+      margin: 8px 0;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    body.light .option {
+      background: #f0f0f0;
+    }
+    .option:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+    body.light .option:hover {
+      background: #e2e2e2;
+    }
+    button {
+      background: var(--accent);
+      color: #000;
+      border: none;
+      padding: 12px 25px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 1em;
+      margin-top: 20px;
+      transition: 0.3s;
+    }
+    button:hover {
+      background: #00b3cc;
+    }
+    .result {
+      font-size: 1.4em;
+      margin-top: 20px;
+      color: #00ffcc;
+      text-align: center;
+    }
+    .explanation {
+      margin-top: 10px;
+      font-size: 0.95em;
+      color: #c0f0ff;
+    }
+    body.light .explanation {
+      color: #333;
+    }
+    .theme-toggle {
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      background: var(--accent);
+      border: none;
+      color: #000;
+      padding: 8px 15px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s;
+      font-weight: bold;
+    }
+    .theme-toggle:hover {
+      background: #00b3cc;
+    }
+  </style>
+</head>
+<body>
+  <button class="theme-toggle" onclick="toggleTheme()">☀️ Light Mode</button>
+  <h1>🚀 Bulk Trade AI Quiz</h1>
+  <div class="quiz-container" id="quiz"></div>
+  <button onclick="submitQuiz()">Submit Quiz</button>
+  <div class="result" id="result"></div>
+
+  <script>
+    const quizData = [
+      {
+        question: "What is the main purpose of Bulk Trade AI?",
+        options: {
+          A: "Social media automation",
+          B: "Decentralized bulk trading and liquidity optimization",
+          C: "Video editing",
+          D: "Crypto wallet management",
+        },
+        answer: "B",
+        explanation:
+          "Bulk Trade AI focuses on automating and optimizing large-scale crypto trading using decentralized systems.",
+      },
+      {
+        question: "Which blockchain ecosystem is Bulk Trade AI primarily built on?",
+        options: {
+          A: "Ethereum",
+          B: "Solana",
+          C: "Polygon",
+          D: "Avalanche",
+        },
+        answer: "B",
+        explanation:
+          "Bulk Trade AI is built on the Solana blockchain, known for its high speed and low transaction costs.",
+      },
+      {
+        question: "What does Bulk Trade AI mainly help users achieve?",
+        options: {
+          A: "Increase transaction fees",
+          B: "Simplify large-scale trading operations",
+          C: "Build NFT art collections",
+          D: "Mine new tokens",
+        },
+        answer: "B",
+        explanation:
+          "It automates and simplifies the process of handling multiple trades, making trading more efficient.",
+      },
+      {
+        question: "What is one major advantage of using Bulk Trade AI?",
+        options: {
+          A: "It reduces manual trading effort and boosts efficiency",
+          B: "It requires expensive hardware",
+          C: "It limits trading volume",
+          D: "It only works offline",
+        },
+        answer: "A",
+        explanation:
+          "Bulk Trade AI automates trading logic, saving time and minimizing manual intervention.",
+      },
+      {
+        question: "Who can benefit the most from Bulk Trade AI?",
+        options: {
+          A: "Professional traders and DeFi enthusiasts",
+          B: "Graphic designers",
+          C: "Content creators",
+          D: "Gamers",
+        },
+        answer: "A",
+        explanation:
+          "DeFi users and traders gain the most by automating bulk orders and improving liquidity management.",
+      },
+    ];
+
+    const quizContainer = document.getElementById("quiz");
+    const resultContainer = document.getElementById("result");
+    const themeButton = document.querySelector(".theme-toggle");
+
+    // Render Questions
+    quizData.forEach((q, i) => {
+      const div = document.createElement("div");
+      div.innerHTML = `
+        <div class="question">${i + 1}. ${q.question}</div>
+        ${Object.entries(q.options)
+          .map(
+            ([key, value]) => `
+          <label class="option">
+            <input type="radio" name="q${i}" value="${key}"> ${key}) ${value}
+          </label>
+        `
+          )
+          .join("")}
+      `;
+      quizContainer.appendChild(div);
+    });
+
+    function submitQuiz() {
+      let score = 0;
+      let explanationsHTML = "";
+      quizData.forEach((q, i) => {
+        const selected = document.querySelector(`input[name="q${i}"]:checked`);
+        if (selected && selected.value === q.answer) {
+          score++;
+          explanationsHTML += `<p><b>Q${i + 1}:</b> ✅ Correct! ${q.explanation}</p>`;
+        } else {
+          explanationsHTML += `<p><b>Q${i + 1}:</b> ❌ Wrong. ${q.explanation}</p>`;
+        }
+      });
+      resultContainer.innerHTML = `Your Score: ${score}/${quizData.length}<br><div class="explanation">${explanationsHTML}</div>`;
+    }
+
+    // Theme Toggle Function
+    function toggleTheme() {
+      document.body.classList.toggle("light");
+      if (document.body.classList.contains("light")) {
+        themeButton.textContent = "🌙 Dark Mode";
+      } else {
+        themeButton.textContent = "☀️ Light Mode";
+      }
+    }
+  </script>
+</body>
+</html>
